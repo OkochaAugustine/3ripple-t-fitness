@@ -1,0 +1,16 @@
+[
+  {
+    "name": "John",
+    "email": "john@gmail.com",
+    "phone": "08012345678",
+    "state": "Delta",
+    "address": "Asaba"
+  },
+  {
+    "name": "Test",
+    "email": "test@example.com",
+    "phone": "08011122233",
+    "state": "Delta",
+    "address": "Asaba"
+  }
+]
