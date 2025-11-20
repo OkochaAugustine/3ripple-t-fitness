@@ -1,53 +1,29 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const filePath = path.join(process.cwd(), "data", "registrations.json");
-
-// Ensure file exists and is valid JSON
-function ensureFile() {
-  try {
-    if (!fs.existsSync(filePath)) {
-      fs.mkdirSync(path.dirname(filePath), { recursive: true });
-      fs.writeFileSync(filePath, "[]");
-      return;
-    }
-
-    let raw = fs.readFileSync(filePath, "utf-8").trim();
-
-    // If empty or invalid, reset it
-    try {
-      if (!raw || raw === "") {
-        fs.writeFileSync(filePath, "[]");
-      } else {
-        JSON.parse(raw); // test parse
-      }
-    } catch {
-      fs.writeFileSync(filePath, "[]");
-    }
-  } catch (err) {
-    console.error("Error ensuring file:", err);
-  }
-}
-
-ensureFile();
+import { supabase } from "../../lib/supabase"; // your Supabase client
 
 export async function POST(req: Request) {
   try {
     const data = await req.json();
 
-    // ❌ Email validation
+    // ✅ Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
       return NextResponse.json({ success: false, error: "Invalid email" });
     }
 
-    // Load registrations safely
-    let raw = fs.readFileSync(filePath, "utf-8").trim();
-    let registrations = JSON.parse(raw);
+    // ✅ Check duplicate email in Supabase
+    const { data: existing, error: fetchError } = await supabase
+      .from("registrations")
+      .select("email")
+      .eq("email", data.email)
+      .single();
 
-    // ❌ Prevent duplicate email
-    if (registrations.some((r: any) => r.email === data.email)) {
+    if (fetchError && fetchError.code !== "PGRST116") {
+      // Ignore "No rows found" error
+      return NextResponse.json({ success: false, error: fetchError.message });
+    }
+
+    if (existing) {
       return NextResponse.json({
         success: false,
         error: "Email already registered",
@@ -57,10 +33,14 @@ export async function POST(req: Request) {
     // Add timestamp
     data.timestamp = new Date().toISOString();
 
-    registrations.push(data);
+    // Insert into Supabase
+    const { error: insertError } = await supabase
+      .from("registrations")
+      .insert([data]);
 
-    // Write back safely
-    fs.writeFileSync(filePath, JSON.stringify(registrations, null, 2));
+    if (insertError) {
+      return NextResponse.json({ success: false, error: insertError.message });
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
@@ -71,26 +51,17 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    let raw = fs.readFileSync(filePath, "utf-8").trim();
+    const { data: registrations, error } = await supabase
+      .from("registrations")
+      .select("*");
 
-    if (!raw || raw === "") {
-      raw = "[]";
-      fs.writeFileSync(filePath, raw);
+    if (error) {
+      return NextResponse.json({ success: false, error: error.message });
     }
-
-    const registrations = JSON.parse(raw);
 
     return NextResponse.json({ success: true, registrations });
   } catch (err) {
     console.error("API GET error:", err);
-
-    // Auto repair file if corrupted
-    fs.writeFileSync(filePath, "[]");
-
-    return NextResponse.json({
-      success: false,
-      error: "File was corrupted and has been reset",
-      registrations: [],
-    });
+    return NextResponse.json({ success: false, error: String(err), registrations: [] });
   }
 }

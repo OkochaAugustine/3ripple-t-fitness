@@ -23,7 +23,7 @@ const heroImages = [
 const carnivalVideo1 = "/videos/carnival-video.mp4";
 const carnivalVideo2 = "/videos/carnival-video2.mp4";
 
-// Sparkle component (client-only)
+// Sparkle component
 const Sparkle = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -54,9 +54,8 @@ const Sparkle = () => {
 
 export default function Home() {
   const router = useRouter();
-  const eventDate = new Date("2025-12-25T06:00:00");
+  const eventDate = new Date("2025-12-20T06:00:00"); // DELTA FITNESS CARNIVAL date
 
-  // ================== Hooks ==================
   const [mounted, setMounted] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState({
@@ -68,13 +67,18 @@ export default function Home() {
   const [showVideo, setShowVideo] = useState(false);
   const [videoIndex, setVideoIndex] = useState(0);
   const videoRefs = [useRef<HTMLVideoElement>(null), useRef<HTMLVideoElement>(null)];
-  const rotatingWords = ["POWER", "ENERGY", "COMPETITION", "TRANSFORMATION"];
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
-  // Mounted (prevent hydration error)
+  const rotatingTexts = [
+    "Join the ultimate fitness carnival featuring Street Carnival Invasion, Workout Party, Glow in the Dark Fitness Rave, Fitness Contests & more.",
+    "Enjoy Music, Games, Face Painting, Drinks & Food!",
+    "Time is running out!",
+    "Our countdown shows how close we are — register now to secure your spot before it’s too late!"
+  ];
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+
   useEffect(() => setMounted(true), []);
 
-  // Countdown
+  // Countdown timer
   useEffect(() => {
     if (!mounted) return;
     const interval = setInterval(() => {
@@ -99,12 +103,12 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [mounted]);
 
-  // Rotating words
+  // Rotating full text
   useEffect(() => {
     if (!mounted) return;
     const interval = setInterval(
-      () => setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length),
-      1500
+      () => setCurrentTextIndex((prev) => (prev + 1) % rotatingTexts.length),
+      3500
     );
     return () => clearInterval(interval);
   }, [mounted]);
@@ -133,7 +137,6 @@ export default function Home() {
     }
   };
 
-  // ================== Render ==================
   if (!mounted) return <Box h="100vh" w="100vw" bg="black" />;
 
   return (
@@ -176,14 +179,12 @@ export default function Home() {
             >
               Register Now
             </Button>
-            {/* Hydration-safe sparkles */}
             {mounted && Array.from({ length: 3 }).map((_, i) => <Sparkle key={i} />)}
           </Box>
         </Flex>
 
         {/* HERO */}
         <Box position="relative" h="100vh" w="100vw" pt="20">
-          {/* Background */}
           {heroImages.map((img, idx) => (
             <Box
               key={idx}
@@ -201,16 +202,7 @@ export default function Home() {
           ))}
           <Box position="absolute" inset={0} bg="blackAlpha.600" />
 
-          {/* HERO TEXT */}
-          <Box
-            position="relative"
-            zIndex={20}
-            textAlign="center"
-            px={4}
-            maxW="3xl"
-            mx="auto"
-            mt={[24, 28, 32]}
-          >
+          <Box position="relative" zIndex={20} textAlign="center" px={4} maxW="3xl" mx="auto" mt={[24, 28, 32]}>
             {/* Main Heading */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -225,7 +217,7 @@ export default function Home() {
                 bgClip="text"
                 letterSpacing="wide"
               >
-                Asaba Fitness Carnival 2025
+                DELTA FITNESS CARNIVAL
               </Heading>
             </motion.div>
 
@@ -235,84 +227,36 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.2 }}
             >
-              <Text
-                fontSize={["lg", "xl", "2xl"]}
-                fontWeight="bold"
-                mt={2}
-                color="pink.200"
-              >
-                With Trainer Tim
+              <Text fontSize={["lg", "xl", "2xl"]} fontWeight="bold" mt={2} color="pink.200">
+                Cenotaph Square, Asaba • December 20th, 2025
               </Text>
             </motion.div>
 
-            {/* Rotating Words */}
+            {/* Rotating full text */}
             <AnimatePresence mode="wait">
               <motion.div
-                key={rotatingWords[currentWordIndex]}
-                initial={{ scale: 0.8, opacity: 0 }}
+                key={rotatingTexts[currentTextIndex]}
+                initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
+                exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.6 }}
               >
                 <Text
-                  fontSize={["2xl", "3xl"]}
-                  fontWeight="extrabold"
+                  fontSize={["md", "lg", "xl"]}
+                  fontWeight="semibold"
                   mt={4}
                   color="yellow.300"
+                  textAlign="center"
+                  px={[2, 4]}
+                  lineHeight="1.5"
                 >
-                  {rotatingWords[currentWordIndex]}
+                  {rotatingTexts[currentTextIndex]}
                 </Text>
               </motion.div>
             </AnimatePresence>
 
-            {/* Hero Description & Countdown Explanation */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.4 }}
-              style={{ marginTop: "20px" }}
-            >
-              <Text
-                fontSize={["md", "lg"]}
-                color="white"
-                fontWeight="semibold"
-                mb={2}
-              >
-                📍 Venue: Dome Event Center, Asaba
-              </Text>
-              <Text
-                fontSize={["md", "lg"]}
-                color="white"
-                fontWeight="semibold"
-                mb={4}
-              >
-                🎉 December 25th • 6:00 AM
-              </Text>
-
-              <Text
-                mt={2}
-                fontSize={["sm", "md"]}
-                color="whiteAlpha.800"
-                px={[2, 4]}
-                lineHeight="1.6"
-              >
-                Join the ultimate fitness carnival featuring Street Carnival Invasion, Workout Party, Glow in the Dark Fitness Rave, Fitness Contests & more. Enjoy Music, Games, Face Painting, Drinks & Food!{" "}
-                <Text as="span" fontWeight="bold" color="pink.400">
-                  Time is running out!
-                </Text>{" "}
-                Our countdown shows how close we are — register now to secure your spot before it’s too late!
-              </Text>
-            </motion.div>
-
             {/* Countdown */}
-            <Flex
-              justify="center"
-              gap={[2, 4]}
-              fontSize={["lg", "2xl"]}
-              fontWeight="bold"
-              mt={6}
-              wrap="wrap"
-            >
+            <Flex justify="center" gap={[2, 4]} fontSize={["lg", "2xl"]} fontWeight="bold" mt={6} wrap="wrap">
               {["Days", "Hours", "Minutes", "Seconds"].map((label, i) => (
                 <Box
                   key={i}
@@ -326,14 +270,8 @@ export default function Home() {
                   minW="85px"
                   textAlign="center"
                 >
-                  <Text>
-                    {i === 0
-                      ? timeLeft.days
-                      : i === 1
-                      ? timeLeft.hours
-                      : i === 2
-                      ? timeLeft.minutes
-                      : timeLeft.seconds}
+                  <Text color="red.500">
+                    {i === 0 ? timeLeft.days : i === 1 ? timeLeft.hours : i === 2 ? timeLeft.minutes : timeLeft.seconds}
                   </Text>
                   <Text fontSize="sm" textTransform="uppercase">
                     {label}
@@ -342,7 +280,7 @@ export default function Home() {
               ))}
             </Flex>
 
-            {/* Call to Action */}
+            {/* Register button */}
             <Button
               mt={6}
               bg="pink.500"
@@ -372,14 +310,7 @@ export default function Home() {
               bg="blackAlpha.900"
               zIndex={9999}
             >
-              <Box
-                position="relative"
-                w="full"
-                h="full"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
+              <Box position="relative" w="full" h="full" display="flex" alignItems="center" justifyContent="center">
                 <Button
                   position="absolute"
                   top={6}
