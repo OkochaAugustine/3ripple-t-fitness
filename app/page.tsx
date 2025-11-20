@@ -291,7 +291,7 @@ export default function Home() {
               borderRadius="full"
               fontSize={["md", "lg"]}
               _hover={{ bg: "pink.600", transform: "scale(1.05)" }}
-              onClick={() => router.push("/app/register")}
+              onClick={() => router.push("/Register")}
             >
               ⏳ Register Now & Secure Your Spot
             </Button>
