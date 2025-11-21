@@ -119,6 +119,7 @@ export default function RegisterPage() {
         ))}
 
         {!submitted ? (
+          /* FORM CARD */
           <Box
             bg="blackAlpha.700"
             p={8}
@@ -186,46 +187,105 @@ export default function RegisterPage() {
             </VStack>
           </Box>
         ) : (
+          /* SUPER PREMIUM SUCCESS SCREEN */
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.2 }}
-            style={{ textAlign: "center" }}
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            style={{ textAlign: "center", position: "relative" }}
           >
-            <Heading fontSize={["4xl", "6xl"]} mb={4}>
+            {/* Floating particles */}
+            {Array.from({ length: 20 }).map((_, i) => (
+              <motion.div
+                key={i}
+                style={{
+                  position: "absolute",
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,0.9)",
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  filter: "blur(1px)",
+                }}
+                animate={{
+                  y: [-10, 10, -10],
+                  opacity: [0.4, 1, 0.4],
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+
+            {/* GOLD GRADIENT HEADER */}
+            <Heading
+              fontSize={["4xl", "6xl"]}
+              mb={4}
+              bgGradient="linear(to-r, #FFD700, #FFF5A5, #FFD700)"
+              bgClip="text"
+              fontWeight="extrabold"
+              textShadow="0 0 25px rgba(255,215,0,0.6)"
+            >
               🎉 Registration Successful! 🎉
             </Heading>
 
-            <Text fontSize={["lg", "2xl"]} mb={6}>
-              Welcome to the Carnival Extravaganza!
-            </Text>
-
+            {/* ELECTRIC BLUE BOX */}
             <motion.div
-              animate={{ rotate: [0, 5, -5, 0] }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9 }}
+            >
+              <Box
+                bg="linear-gradient(135deg, #005eff, #00a2ff)"
+                color="white"
+                px={6}
+                py={4}
+                borderRadius="lg"
+                mb={8}
+                boxShadow="0 0 25px rgba(0,140,255,0.7)"
+                fontSize={["lg", "2xl"]}
+                fontWeight="semibold"
+                style={{ backdropFilter: "blur(6px)" }}
+              >
+                Welcome to the Carnival Extravaganza!
+              </Box>
+            </motion.div>
+
+            {/* TRAINER TIM MESSAGE */}
+            <motion.div
+              animate={{ rotate: [0, 4, -4, 0] }}
               transition={{ repeat: Infinity, duration: 2 }}
             >
               <Text
                 fontSize={["2xl", "3xl"]}
                 fontWeight="bold"
-                color="yellow.300"
-                mb={8}
+                px={6}
+                py={3}
+                borderRadius="lg"
+                bg="linear-gradient(135deg, #007bff, #009dff)"
+                color="white"
+                boxShadow="0 0 20px rgba(0,140,255,0.8)"
+                mb={10}
               >
                 Get ready to party and move with Trainer Tim!
               </Text>
             </motion.div>
 
-            {/* 🌟 WhatsApp Glowing CTA */}
+            {/* WHATSAPP GLOW CTA */}
             <motion.a
               href="https://wa.me/2348182787631?text=Hello!%20I%20just%20registered%20for%20the%20Delta%20Fitness%20Carnival."
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: "inline-block" }}
-              initial={{ scale: 0.8 }}
+              initial={{ scale: 0.9 }}
               animate={{
-                scale: [1, 1.15, 1],
+                scale: [1, 1.12, 1],
                 boxShadow: [
                   "0 0 15px #25D366",
-                  "0 0 25px #25D366",
+                  "0 0 35px #25D366",
                   "0 0 15px #25D366",
                 ],
               }}
@@ -238,21 +298,22 @@ export default function RegisterPage() {
               <Box
                 bg="#25D366"
                 color="white"
-                px={8}
+                px={10}
                 py={4}
                 borderRadius="full"
                 fontSize="xl"
-                fontWeight="bold"
+                fontWeight="extrabold"
                 mb={6}
+                textShadow="0 0 10px rgba(0,0,0,0.4)"
               >
-                💬 Tap here to Join WhatsApp Updates
+                💬 Tap Here to Join WhatsApp Updates
               </Box>
             </motion.a>
 
             <Button
               mt={4}
               bg="pink.500"
-              _hover={{ bg: "pink.600" }}
+              _hover={{ bg: "pink.600", transform: "scale(1.05)" }}
               color="white"
               onClick={() => router.push("/")}
             >
@@ -264,4 +325,3 @@ export default function RegisterPage() {
     </ChakraProvider>
   );
 }
-
