@@ -13,7 +13,6 @@ import {
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-// Background image
 const backgroundImage = "/images/form-bg.png";
 
 export default function RegisterPage() {
@@ -37,7 +36,6 @@ export default function RegisterPage() {
   useEffect(() => {
     setMounted(true);
 
-    // Generate sparkle positions
     const arr = Array.from({ length: 3 }).map(() => ({
       top: Math.random() * 100,
       left: Math.random() * 100,
@@ -51,12 +49,10 @@ export default function RegisterPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Simple email validation
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  // Submit
   const handleSubmit = async () => {
     if (!validateEmail(formData.email)) {
       alert("Please enter a valid email address.");
@@ -85,7 +81,7 @@ export default function RegisterPage() {
     }
   };
 
-  if (!mounted) return null; // Prevent SSR issues
+  if (!mounted) return null;
 
   return (
     <ChakraProvider>
@@ -111,7 +107,7 @@ export default function RegisterPage() {
               position: "absolute",
               width: `${s.size}px`,
               height: `${s.size}px`,
-              borderRadius: "50%", // FIXED
+              borderRadius: "50%",
               background: "linear-gradient(45deg, pink, yellow, cyan)",
               top: `${s.top}%`,
               left: `${s.left}%`,
@@ -193,15 +189,17 @@ export default function RegisterPage() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 1.5 }}
+            transition={{ duration: 1.2 }}
             style={{ textAlign: "center" }}
           >
             <Heading fontSize={["4xl", "6xl"]} mb={4}>
               🎉 Registration Successful! 🎉
             </Heading>
+
             <Text fontSize={["lg", "2xl"]} mb={6}>
               Welcome to the Carnival Extravaganza!
             </Text>
+
             <motion.div
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ repeat: Infinity, duration: 2 }}
@@ -210,13 +208,49 @@ export default function RegisterPage() {
                 fontSize={["2xl", "3xl"]}
                 fontWeight="bold"
                 color="yellow.300"
+                mb={8}
               >
                 Get ready to party and move with Trainer Tim!
               </Text>
             </motion.div>
 
+            {/* 🌟 WhatsApp Glowing CTA */}
+            <motion.a
+              href="https://wa.me/2348182787631?text=Hello!%20I%20just%20registered%20for%20the%20Delta%20Fitness%20Carnival."
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "inline-block" }}
+              initial={{ scale: 0.8 }}
+              animate={{
+                scale: [1, 1.15, 1],
+                boxShadow: [
+                  "0 0 15px #25D366",
+                  "0 0 25px #25D366",
+                  "0 0 15px #25D366",
+                ],
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 1.8,
+                ease: "easeInOut",
+              }}
+            >
+              <Box
+                bg="#25D366"
+                color="white"
+                px={8}
+                py={4}
+                borderRadius="full"
+                fontSize="xl"
+                fontWeight="bold"
+                mb={6}
+              >
+                💬 Tap here to Join WhatsApp Updates
+              </Box>
+            </motion.a>
+
             <Button
-              mt={6}
+              mt={4}
               bg="pink.500"
               _hover={{ bg: "pink.600" }}
               color="white"
@@ -230,3 +264,4 @@ export default function RegisterPage() {
     </ChakraProvider>
   );
 }
+
